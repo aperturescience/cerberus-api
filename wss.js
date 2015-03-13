@@ -1,6 +1,9 @@
 var config          = require('./config.json');
 var WebSocketServer = require('ws').Server;
 
+var influx          = require('./db'),
+    util            = require('util');
+
 /**
  * Create WebSocket server
  */
@@ -22,8 +25,48 @@ exports.create = function() {
 
     ws.send(JSON.stringify(msg));
 
-    ws.on('message', function(message) {
-      console.log('received: %s', message);
+    ws.on('message', function(metrics) {
+
+      try {
+        metrics = JSON.parse(metrics);
+      } catch(ex) {
+        return;
+      }
+
+      console.log('received: %j', metrics);
+
+      var timestamp = new Date().toISOString();
+
+      // send metrics to Database
+      influx.write({
+        "database": "localhost",
+        "points": [
+          {
+            "name": "latency",
+            "tags": {
+              "host": metrics._meta.host,
+              "path": metrics.req.path
+            },
+            "timestamp": timestamp,
+            "fields": {
+              "ms": parseFloat(metrics.res.delay.ms),
+              "ns": metrics.res.delay.ns
+            }
+          },
+          {
+            "name": "payload",
+            "tags": {
+              "host": metrics._meta.host,
+              "path": metrics.req.path
+            },
+            "timestamp": timestamp,
+            "fields": {
+              "size": parseInt(metrics.res.contentLength)
+            }
+          }
+        ]
+      });
+
     });
 
   });
