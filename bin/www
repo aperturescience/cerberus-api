@@ -2,15 +2,22 @@
 
 var app       = require('../app');
 var debug     = require('debug')('analytics-api:server');
-var http      = require('http');
+var https     = require('https');
 
 var wss       = require('../wss');
 
 var port = normalizePort(process.env.PORT || 64000);
 app.set('port', port);
 
+var hskey = fs.readFileSync('/etc/ssl/astromo/private/astromo_io.key');
+var hscert = fs.readFileSync('/etc/ssl/astromo/certs/bundle.crt');
+var options = {
+    key  : hskey,
+    cert : hscert
+};
+
 // Create HTTP server.
-var server = http.createServer(app);
+var server = http.createServer(options, app);
 
 // Create WebSocket Server
 wss.create();
