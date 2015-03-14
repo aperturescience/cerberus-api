@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var fs        = require('fs');
 var app       = require('../app');
 var debug     = require('debug')('analytics-api:server');
 var https     = require('https');
@@ -9,15 +10,13 @@ var wss       = require('../wss');
 var port = normalizePort(process.env.PORT || 64000);
 app.set('port', port);
 
-var hskey = fs.readFileSync('/etc/ssl/astromo/private/astromo_io.key');
-var hscert = fs.readFileSync('/etc/ssl/astromo/certs/bundle.crt');
 var options = {
-    key  : hskey,
-    cert : hscert
+  key  : fs.readFileSync(process.env.SSL_KEY),
+  cert : fs.readFileSync(process.env.SSL_CERT),
 };
 
 // Create HTTP server.
-var server = http.createServer(options, app);
+var server = https.createServer(options, app);
 
 // Create WebSocket Server
 wss.create();
