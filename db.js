@@ -27,15 +27,16 @@ Influx.prototype.write = function(data) {
     body   : data
   }, function(err, res, body) {
 
+    if (err)
+      throw err;
+
     if (res.statusCode !== 200)
       console.warn('not ok', res.statusCode);
 
-    if (err)
-      throw err;
   });
 };
 
 module.exports = new Influx({
-  host : '54.93.177.111',
+  host : '127.0.0.1',
   ssl  : false
 });
