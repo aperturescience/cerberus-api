@@ -1,2 +1,2 @@
-# cerberus-api
-Cerberus API Gateway Service
+# astromo-metrics
+Astromo Metrics Gateway
