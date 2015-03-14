@@ -11,8 +11,10 @@ var port = normalizePort(process.env.PORT || 64000);
 app.set('port', port);
 
 var options = {
-  key  : fs.readFileSync(process.env.SSL_KEY),
-  cert : fs.readFileSync(process.env.SSL_CERT),
+  key     : fs.readFileSync(process.env.SSL_KEY),
+  cert    : fs.readFileSync(process.env.SSL_CERT),
+  ciphers : 'ECDH+AESGCM:ECDH+AES256:ECDH+AES128:ECDH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS',
+  honorCipherOrder: true
 };
 
 // Create HTTP server.
