@@ -1,3 +1,2 @@
 FROM iojs:onbuild
-
-EXPOSE 64000
+EXPOSE 443
