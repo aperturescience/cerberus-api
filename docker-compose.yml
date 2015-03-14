@@ -1,0 +1,15 @@
+web:
+  build: .
+
+  ports:
+    - "64000:443"
+
+  volumes:
+    - /etc/ssl/astromo/private:/etc/ssl/astromo/private:ro
+    - /etc/ssl/astromo/certs:/etc/ssl/astromo/certs:ro
+
+  environment:
+    SSL_CERT: /etc/ssl/astromo/certs/bundle.crt
+    SSL_KEY: /etc/ssl/astromo/private/astromo_io.key
+
+  restart: always
